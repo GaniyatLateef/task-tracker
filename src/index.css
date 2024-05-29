@@ -104,6 +104,13 @@ body {
   gap: 8px;
 }
 
+.task .header .actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+}
+
 .task .header .title, .task .task-day  {
   display: flex;
   align-items: center;
@@ -112,7 +119,6 @@ body {
 }
 
 .task .task-desc {
-  text-align: justify;
   margin-bottom: 12px;
 }
 

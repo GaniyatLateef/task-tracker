@@ -10,6 +10,7 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   const [tasks, setTasks] = useState([]);
+  const [updTask, setUpdTask] = useState({});
 
   useEffect(() => {
     setIsLoading(true);
@@ -33,9 +34,23 @@ const Home = () => {
 
       {!isLoading && (
         <>
-          {showForm && <TaskForm />}
+          {showForm && ( 
+          <TaskForm 
+             setTasks={setTasks}
+             tasks= {tasks}
+             setShowForm={setShowForm}
+             updTask={updTask}
+             setUpdTask={setUpdTask}
+          />
+          )}
           {error && <p> Unable to fetch tasks {error}</p>}
-          {!showForm && <Tasks tasks={tasks} />}
+          {!showForm && (
+             <Tasks 
+                tasks={tasks} 
+                setUpdTask={setUpdTask}
+                setShowForm={setShowForm}
+                />
+          )}
         </>
       )}
       {isLoading && <p>Fetching tasks...</p>}

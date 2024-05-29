@@ -6,7 +6,15 @@ const Header = ({ title, showForm, setShowForm }) => {
     <header className="header">
       <p>Welcome, {title}</p>
       <Button
-        label={showForm ? "Show Tasks" : "Add Task"}
+        label={
+          showForm ? (
+            "Show Tasks"
+          ) : (
+            <>
+              <FaPlus/> Add Task
+            </>
+          )
+        }
         onClick={setShowForm}
       />
     </header>

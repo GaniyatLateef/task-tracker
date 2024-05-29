@@ -1,12 +1,12 @@
 import React from "react";
-import { postTask } from "../api/service";
+import { getTaskById, postTask, updateTask } from "../api/service";
 
-const TaskForm = () => {
+const TaskForm = ({setTasks, tasks, setShowForm, updTask, setUpdTask}) => {
   const defaultValues = {
-    title: "",
-    description: "",
-    taskDay: "",
-    reminder: false,
+    title: updTask.title || "",
+    description: updTask.description || "",
+    taskDay: updTask.taskDay || "",
+    reminder: updTask.reminder || false,
   };
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -33,10 +33,28 @@ const TaskForm = () => {
     setIsLoading(true);
 
     try {
+      if (!updTask.id) {
       const res = await postTask(formValues);
       console.log(res);
       console.log(res.headers["Location"]);
       setFormValues(defaultValues);
+
+      const newLocation = res.headers.location;
+      if (newLocation) {
+        const index = newLocation.lastIndexOf("/"); 
+        const taskId = newLocation.substring(index + 1);
+        const createdTask = await getTaskById(taskId);
+        setTasks([...tasks, createdTask.data]);
+        setShowForm(false);
+      }
+      } else {
+        const taskId = updTask.id;
+        const res = await updateTask({...formValues, id: taskId });
+        setUpdTask({});
+        const filteredTask = tasks.filter((t) => t.id !== taskId);
+        setTasks([...filteredTask, res.data]);
+        setShowForm(false);
+      }
     } catch (err) {
       setErrorMsg(err.response?.data?.message || err.message);
     }
@@ -110,7 +128,12 @@ const TaskForm = () => {
      <input 
         className="btn btn-block"
         type="submit"
-        value={`${isLoading ? "saving Task..." : "Save Task"}`}
+        value={`${isLoading
+           ? "saving Task..." 
+           :  updTask.id
+           ?  "update Task"
+           :  "Save Task"
+          }`}
      />
     </form>
     </div>
